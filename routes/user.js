@@ -6,6 +6,7 @@ router.get('/:id', (req, res) => {
   if (!isNaN(req.params.id)) {
     User.getOne(req.params.id).then(user => {
       if (user) {
+        delete user.password;
         res.json(user);
       } else {
         resError(res, 404, "User Not Found");
