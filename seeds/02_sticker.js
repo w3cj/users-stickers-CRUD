@@ -1,5 +1,5 @@
 exports.seed = (knex, Promise) => {
-  return knex.raw('DELETE FROM sticker; ALTER SEQUENCE sticker_id_seq RESTART WITH 7')
+  return knex.raw('DELETE FROM sticker; ALTER SEQUENCE sticker_id_seq RESTART WITH 1')
       .then(() => {
         const stickers = [{
           image_url: 'http://devstickers.com/assets/img/cat/angular2.png',
