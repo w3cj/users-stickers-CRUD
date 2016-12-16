@@ -20,9 +20,8 @@ router.get('/:id', (req, res) => {
 router.get('/:id/sticker', (req,res)=>{
   if (!isNaN(req.params.id)) {
     Sticker.getByUser(req.params.id).then(stickers => {
-        res.json(stickers);
-      }
-    })
+      res.json(stickers);
+    });
   } else {
     resError(res, 500, "Invalid ID");
   }
