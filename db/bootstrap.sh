@@ -1,1 +1,0 @@
-createdb sticker-mania
