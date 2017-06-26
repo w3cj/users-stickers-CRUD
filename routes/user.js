@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../db/user');
 const Sticker = require('../db/sticker');
+const authMiddleware = require('../auth/middleware.js')
 
-router.get('/:id', (req, res) => {
+router.get('/:id', authMiddleware.allowAccess, (req, res) => {
   if (!isNaN(req.params.id)) {
     User.getOne(req.params.id).then(user => {
       if (user) {
@@ -18,7 +19,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
-router.get('/:id/sticker', (req,res)=>{
+router.get('/:id/sticker', authMiddleware.allowAccess, (req,res)=>{
   if (!isNaN(req.params.id)) {
     Sticker.getByUser(req.params.id).then(stickers => {
       res.json(stickers);
