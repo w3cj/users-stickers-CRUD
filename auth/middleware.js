@@ -1,6 +1,27 @@
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+function checkTokenSetUser(req, res, wat) {
+  const tokenHeader = req.get('Authorization');
+  if(tokenHeader) {
+    const token = tokenHeader.split(' ')[1];
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+      if(err) {
+        wat();
+      } else {
+        console.log(decoded);
+        req.user = decoded;
+        wat();
+      }
+    });
+  } else {
+    wat();
+  }
+}
+
 function ensureLoggedIn(req, res, next){
-  console.log(req.signedCookies);
-  if(req.signedCookies.user_id){
+  console.log(req.user);
+  if(req.user){
     next();
   }else{
     res.status(401)
@@ -9,7 +30,7 @@ function ensureLoggedIn(req, res, next){
 }
 
 function allowAccess(req, res, next){
-  if(req.signedCookies.user_id == req.params.id){
+  if(req.user.id == req.params.id){
     next();
   }else{
     res.status(401)
@@ -19,5 +40,6 @@ function allowAccess(req, res, next){
 
 module.exports = {
   ensureLoggedIn,
-  allowAccess
+  allowAccess,
+  checkTokenSetUser
 }

@@ -1,8 +1,10 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = require('../db/user')
 
+require('dotenv').config();
 
 router.get('/', (req, res) => {
   res.json({
@@ -38,11 +40,22 @@ router.post('/signup', (req, res, next) => {
               User
                 .create(user)
                 .then(id => {
-                  setUserIdCookie(req, res, id);
-                  res.json({
-                    id,
-                    message: 'ok'
-                  })
+                  jwt.sign({
+                    id
+                  }, process.env.TOKEN_SECRET, { expiresIn: '1h' }, (err, token) => {
+                    console.log('err', err);
+                    console.log('token', token);
+                    res.json({
+                      id,
+                      token,
+                      message: 'ok'
+                    })
+                  });
+                  // setUserIdCookie(req, res, id);
+                  // res.json({
+                  //   id,
+                  //   message: 'ok'
+                  // })
                 })
             })
         } else {
@@ -72,11 +85,22 @@ router.post('/login', (req, res, next) => {
           bcrypt.compare(req.body.password, user.password)
             .then((result) => {
               if (result) {
-                setUserIdCookie(req, res, user.id)
-                res.json({
-                  id: user.id,
-                  message: 'Logged in!'
+                jwt.sign({
+                  id: user.id
+                }, process.env.TOKEN_SECRET, { expiresIn: '1h' }, (err, token) => {
+                  console.log('err', err);
+                  console.log('token', token);
+                  res.json({
+                    id: user.id,
+                    token,
+                    message: 'ok'
+                  })
                 });
+                // setUserIdCookie(req, res, user.id)
+                // res.json({
+                //   id: user.id,
+                //   message: 'Logged in!'
+                // });
               } else {
                 next(new Error('Invalid login'))
               }

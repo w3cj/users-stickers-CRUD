@@ -29,6 +29,8 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(authMiddleware.checkTokenSetUser);
+
 app.use('/auth', auth)
 app.use('/', index);
 app.use('/user', authMiddleware.ensureLoggedIn, user);
